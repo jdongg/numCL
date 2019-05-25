@@ -103,7 +103,6 @@ for k=1:length(N)
     ii = find((x>d+0.5) | (x<d-0.5));
     L1(k) = sum(abs(u(ii(1:end-1))-ue(ii(1:end-1))))/length(ii(1:end-1));  
     
-%     L1(k) = sum(abs(ue-u))/N(k);
 end
 
 for k=1:length(N)-1

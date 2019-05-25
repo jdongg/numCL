@@ -1,6 +1,6 @@
 # Numerical Conservation Laws
 
-This repository contain Python and MATLAB scripts for implementing high-order finite volume and finite difference methods for nonlinear conservation laws and systems of conservation laws. We cover
+This repository contains Python and MATLAB scripts for implementing high-order finite volume and finite difference methods for nonlinear conservation laws and systems of conservation laws. We cover
 * TVD/TVB slope limiters
 * WENO finite volume and finite difference schemes
 

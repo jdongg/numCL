@@ -13,6 +13,9 @@ N  = [20 40 80 160 320 640]+1;
 
 % stopping time
 T = 1.5;
+
+% TVB limiter parameter
+M = 1.0;
     
 for k=1:length(N)
     % setup grid points
@@ -37,55 +40,27 @@ for k=1:length(N)
 
         % first RK stage
         [um,up] = polynomial_reconstruction(u0);
-        [um,up] = muscl_limiter(um,up,u0);
+        [um,up] = tvb_limiter(um,up,u0,dx,M);
         fR = numerical_flux(um,up,dx,dt,A);    
         fL = circshift(fR,1);
         u = u0 - dt/dx*(fR - fL);
 
         % second RK stage
         [um,up] = polynomial_reconstruction(u);
-        [um,up] = muscl_limiter(um,up,u);
+        [um,up] = tvb_limiter(um,up,u,dx,M);
         fR = numerical_flux(um,up,dx,dt,A);    
         fL = circshift(fR,1);
         u = 3/4*u0 + 1/4*(u - dt/dx*(fR - fL));
 
         % third RK stage
         [um,up] = polynomial_reconstruction(u);
-        [um,up] = muscl_limiter(um,up,u);
+        [um,up] = tvb_limiter(um,up,u,dx,M);
         fR = numerical_flux(um,up,dx,dt,A);    
         fL = circshift(fR,1);
         u = 1/3*u0 + 2/3*(u - dt/dx*(fR - fL));
 
         u0 = u;
         t = t+dt;
-        
-%         if (mod(iter,2) == 0)
-            % compute cell averages of exact solution
-%             Ne = 300;
-%             xe = linspace(a,b,Ne)'; 
-%             ue = zeros(length(x)-1,1);
-% 
-%             dxe = (b-a)/(Ne-1); 
-% 
-%             for i=1:Ne-1
-%                 ue(i) = 1/dx*integral(@(xx)exact_solution(t,xx',alpha,beta),x(i),x(i+1),...
-%                                        'ArrayValued',true);
-%             end 
-% 
-%             
-%             plot(x,[u; u(1)],'o-','linewidth',2);
-%             hold on;
-%             plot(xe,[ue; ue(1)],'linewidth',2);
-%             hold off;
-%             xlim([0 2*pi]);
-%             grid on;
-%             xlabel('$$x$$','interpreter','latex','fontsize',16);
-%             ylabel('$$u(x,t)$$','interpreter','latex','fontsize',16);
-%             str = sprintf('Burgers Equation via FV3 with MUSCL Limiter, $$t=%f$$',t);
-%             title(str,'interpreter','latex','fontsize',16);
-%             set(gca,'ticklabelinterpreter','latex','fontsize',16);
-%             pause
-%         end
         
         iter = iter+1;
     end
